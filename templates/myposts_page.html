@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>My Posts</title>
+</head>
+<body>
+    <div class="container">
+    <h1>Get all my posts</h1>
+    <br>
+    {% if all_posts|length < 1 %}
+    <h4>You haven't created any posts yet! Create Your First Post</h4>
+    {% else %}
+    <table border="1" align="center">
+        <tr>
+            <th>Topic Title</th>
+            <th>Post Title</th>
+            <th>Description</th>
+        </tr>
+        {% for post in all_posts %}
+        <tr>
+            <td>{{ post.topic_title }}</td>
+            <td>{{ post.post_title }}</td>
+            <td>{{ post.post_description }}</td>
+
+            <td>
+                <a href="/update/{{post.post_id}}"><button>Update</button></a>
+                <br>
+                <button><a href="/delete/{{post.post_id}}">Delete</a></button>
+            </td>
+            
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+    
+    
+    </div>
+</body>
+</html>

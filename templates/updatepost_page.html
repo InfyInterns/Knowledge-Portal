@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Update Post</h1>
+        
+    
+        <form action="/update/{{post_to_be_update.post_id}}" method="PUT">
+            <label>Topic Title : -  </label><br><br>
+            <input type="text" name="post_title" value="{{post_to_be_update.post_title}}"><br><br><br><br>
+            <textarea name="post_description" value="{{post_to_be_update.post_description}}"></textarea><br><br><br><br>
+            <input type="submit" value="Update">
+        </form>
+    
+    
+    </div>
+</body>
+</html>

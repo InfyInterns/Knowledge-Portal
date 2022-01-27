@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <h2>If you want to create new posts under these topics,Please <a href="/login"><button>Login with Google</button></a> </h2>
+        <h1>Get all the topics with description</h1>
+    
+    <table border="1" align="center">
+        <tr>
+            <th>Topic Id</th>
+            <th>Topic Title</th>
+            <th>Description</th>
+        </tr>
+        {% for topic in all_topics %}
+        <tr>
+            <td>{{ topic.topic_id }}</td>
+            <td>{{ topic.topic_title }}</td>
+            <td>{{ topic.topic_description }}</td>
+            <td>
+                <button><a href="/topics/{{topic.topic_id}}">View Posts</a></button>
+            </td>
+
+        </tr>
+        {% endfor %}
+    </table>
+    
+    
+    </div>
+</body>
+</html>

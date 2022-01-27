@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Create Post</title>
+</head>
+<body>
+    <div class="container">
+    <h1>Create New Post</h1>
+    <form action="/post" method="POST">
+        <label>Select the topic:</label>
+        <select name="topic_title">
+        <option name="topic_title" value="Flask">Flask</option>
+        <option name="topic_title" value="PostgreSQL">PostgreSQL</option>
+        <option name="topic_title" value="React">React</option>
+        <option name="topic_title" value="Microsoft Azure">Microsoft Azure</option>
+        </select>
+        <br><br><br>
+        <input type="text" name="post_title" placeholder="Enter Title Here"><br><br><br><br>
+        <textarea name="post_description" placeholder="Add description here"></textarea><br><br><br><br>
+        <button>POST</button>
+    </form>
+    </div>
+    
+</body>
+</html>

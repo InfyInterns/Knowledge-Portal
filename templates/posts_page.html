@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>Posts Under Specific Topic</title>
+</head>
+<body>
+    <div class="container">
+    <h1>Get all the posts Under a specific topic</h1>
+    <br>
+    <h1>{{ topic_title }}</h1>
+    
+    {% if all_posts|length < 1 %}
+    <h4>There are no posts under {{topic_title}}.Please Login to create one below!</h4>
+    {% else %}
+    <table border="1" align="center">
+        <tr>
+            <th>Post Title</th>
+            <th>Description</th>
+        </tr>
+        {% for post in all_posts %}
+        <tr>
+            <td>{{ post.post_title }}</td>
+            <td>{{ post.post_description }}</td>
+            
+
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+    
+    
+    </div>
+</body>
+</html>
