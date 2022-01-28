@@ -15,9 +15,12 @@ app.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres:password123@localho
 app.config['SQLAlCHEMY_TRACK_MODIFICATIONS']=False
 db=SQLAlchemy(app)
 
+
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
+
 GOOGLE_CLIENT_ID="1005262086641-mmfblvv9m16293ufmop8tufas7qcsqsv.apps.googleusercontent.com"
+
 
 client_secrets_file=os.path.join(pathlib.Path(__file__).parent,"client_secret.json")
 flow=Flow.from_client_secrets_file(
@@ -27,7 +30,8 @@ flow=Flow.from_client_secrets_file(
 
     )
 
-#Decorator
+
+#Decorator for Authentication
 def login_is_required(function):
     def wrapper(*args,**kwargs):
         if "google_id" not in session:
@@ -37,6 +41,8 @@ def login_is_required(function):
     wrapper.__name__=function.__name__
     return wrapper
 
+
+#Topic Table
 class Topic(db.Model):
     __tablename__ = 'topic'
     id = db.Column(db.Integer, primary_key = True)
@@ -45,6 +51,8 @@ class Topic(db.Model):
     posts = db.relationship('Post', backref='topic', lazy='dynamic')
 
 
+
+#Post Table
 class Post(db.Model):
     __tablename__ = 'post'
     id = db.Column(db.Integer, primary_key = True)
@@ -53,19 +61,26 @@ class Post(db.Model):
     post_title = db. Column(db.String(100), nullable = False)
     post_description = db.Column(db.String(500), nullable = False)
 
+
+#User Table
 class User(db.Model):
     __tablename__ = 'user'
     google_id = db.Column(db.String(100), primary_key = True)
     name = db. Column(db.String(100), nullable = False)
     email=db.Column(db.String(100),nullable = False)
-  
 
+
+  
+#Google Login
 @app.route('/login')
 def login():
     authorization_url, state = flow.authorization_url()
     session["state"] = state
     return redirect(authorization_url)
 
+
+
+#Call back after Google Id Verification
 @app.route('/callback')
 def callback():
     flow.fetch_token(authorization_response=request.url)
@@ -92,11 +107,16 @@ def callback():
     
     return redirect('/authorized_area')
 
+
+
+#Logout
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect('/')
 
+
+#Authorized Page
 @app.route('/authorized_area')
 @login_is_required
 def authorized_area():
@@ -107,6 +127,7 @@ def authorized_area():
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 #Get all the topics with description
 @app.route('/topics', methods = ['GET'])
@@ -123,7 +144,8 @@ def gettopics():
     
     return render_template('topics_page.html', all_topics=all_topics)
 
-#Create Post under a specific topic
+
+#Create Post under a specific topic - Authorized Area
 @app.route('/post', methods = ['GET','POST'])
 @login_is_required
 def create_post():
@@ -145,7 +167,9 @@ def create_post():
   else:
       return render_template('createpost_page.html')
 
-#Get all my posts
+
+
+#Get all my posts - Authorized Area
 @app.route('/myposts')
 @login_is_required
 def get_my_posts():
@@ -162,6 +186,8 @@ def get_my_posts():
           all_my_posts.append(results)
 
     return render_template('myposts_page.html', all_posts=all_my_posts)
+
+
 
 
 #Get all the posts with description under a specific topic
@@ -181,38 +207,42 @@ def getposts_under_specific_topic(id):
     
     return render_template('posts_page.html', all_posts=all_posts,topic_title=topic_title)
 
-#Update the post under a specific topic
+
+
+#Update the post under a specific topic - Authorized Area
 @app.route('/update/<int:post_id>', methods = ['GET','PUT'])
 def updatepost_under_specific_topic(post_id):
-
-    post_to_be_update=Post.query.get(post_id)
-    if request.method == 'PUT':
-        post_title = request.json['post_title']
-        post_description = request.json['post_description']
-        
-        post_to_be_update.post_title=post_title
-        post_to_be_update.post_description=post_description
-        db.session.add(post_to_be_update)
-        db.session.commit()
-        return jsonify({"success": True, "response": "updated"})
-        
-     
-        
-
+    if "google_id" not in session:
+            return abort(401)
     else:
-        return render_template('updatepost_page.html',post_to_be_update=post_to_be_update)
+        post_to_be_update=Post.query.get(post_id)
+        if request.method == 'PUT':
+            post_title = request.json['post_title']
+            post_description = request.json['post_description']
+        
+            post_to_be_update.post_title=post_title
+            post_to_be_update.post_description=post_description
+            
+            db.session.commit()
+            return jsonify({"success": True, "response": "updated"})
+        
+        else:
+            return render_template('updatepost_page.html',post_to_be_update=post_to_be_update)
 
 
-#Delete a post under a specific topic
+
+
+#Delete a post under a specific topic - Authorized Area
 @app.route('/delete/<post_id>')
 def deletepost_under_specific_topic(post_id):
-    post_to_be_delete=Post.query.get(post_id)
-  
-    db.session.delete(post_to_be_delete)
-    db.session.commit()
-     
-    
-    return render_template('success_page.html')
+    if "google_id" not in session:
+            return abort(401)
+    else:
+
+        post_to_be_delete=Post.query.get(post_id)
+        db.session.delete(post_to_be_delete)
+        db.session.commit()
+        return render_template('success_page.html')
 
 
 if __name__=='__main__':
