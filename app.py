@@ -2,6 +2,7 @@ import os
 import pathlib
 import requests
 import cachecontrol
+import psycopg2
 from flask import Flask,request,render_template,session,abort,redirect,jsonify
 from flask_sqlalchemy import SQLAlchemy
 from google_auth_oauthlib.flow import Flow
@@ -11,9 +12,13 @@ import google.auth.transport.requests
 
 app=Flask(__name__)
 app.secret_key="InfyInterns"
-app.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres:password123@localhost/knowledge_portal'
+
+app.config['SQLALCHEMY_DATABASE_URI']='postgresql://InfyAdmin@knowledge-portal-db:Assignment2022@knowledge-portal-db.postgres.database.azure.com:5432/knowledge_portal'
+
 app.config['SQLAlCHEMY_TRACK_MODIFICATIONS']=False
 db=SQLAlchemy(app)
+
+
 
 
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
